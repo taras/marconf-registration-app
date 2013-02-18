@@ -19,7 +19,7 @@ Sackville, New Brunswick</p>
 <h4>Time and Location for Registration</h4>
 <p><strong>*** Attendance must be confirmed at the registration desk upon arrival. ***</strong><br>
 Registration is located at Tantramar Veterans Memorial Civic Centre<br>
-May 31, Thursday, from 11:00 am to 8:30 pm and June 1, Friday, starting at 8:30 am</p?
+May 31, Thursday, from 11:00 am to 8:30 pm and June 1, Friday, starting at 8:30 am</p>
 HTML;
 
     $footer_content = <<<HTML
@@ -200,6 +200,10 @@ HTML;
       'name'  => 'registration',
       'url'   => '',
     ) );
+
+    /**
+     * @todo: add person schema
+     */
 
   }
 
