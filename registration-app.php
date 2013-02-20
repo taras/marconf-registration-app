@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name: Marconf Registration App
+ * Plugin Name: Registration App
  */
 
 add_action( 'scaleup_app_init',function() {
-  include( './app.php' );
+  include( dirname( __FILE__ ) . '/app.php' );
 } );

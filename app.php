@@ -6,7 +6,9 @@
  */
 class Marconf_Registration_App extends ScaleUp_App {
 
-  function initization() {
+  function init() {
+
+    $this->set( 'name', 'marconf_registration' );
 
     $this->set( 'url', '/annual-meeting/delegate-visitor-registration' );
 
@@ -32,6 +34,9 @@ HTML;
 </ul>
 HTML;
 
+    /**
+     * New User Form
+     */
     $this->register( 'form', array(
       'name'      => 'new',
       'fields'    => array(
@@ -66,19 +71,19 @@ HTML;
             'rev-dr'   => 'Rev. Dr.',
           ),
         ),
-        'givenName' => array(
+        'first_name' => array(
           'type'        => 'text',
           'validation'  => array( 'required' ),
         ),
-        'familyName'  => array(
+        'last_name'  => array(
           'type'        => 'text',
           'validation'  => array( 'required' ),
         ),
-        'address1'    => array(
+        'street_address'    => array(
           'type'        => 'text',
           'validation'  => array( 'required' ),
         ),
-        'address2'    => array(
+        'address_line2'    => array(
           'type'        => 'text',
           'validation'  => array( 'required' ),
         ),
@@ -90,7 +95,7 @@ HTML;
           'type'        => 'text',
           'validation'  => array( 'required' ),
         ),
-        'post_code'    => array(
+        'postal_code'    => array(
           'type'        => 'text',
           'validation'  => array( 'required' ),
         ),
@@ -106,7 +111,7 @@ HTML;
           'type'        => 'text',
           'validation'  => array( 'email' ),
         ),
-        'email2'       => array(
+        'second-email'  => array(
           'type'        => 'text',
           'validation'  => array( 'email' ),
         ),
@@ -176,6 +181,9 @@ HTML;
       ),
     ));
 
+    /**
+     * Register the existing user form
+     */
     $this->register( 'form', array(
       'name'      => 'existing',
       'fields'    => array(
@@ -190,20 +198,93 @@ HTML;
       ),
     ));
 
+    /**
+     * Registration template
+     */
     $this->register( 'template', array(
       'name'      => 'registration_app_register',
-      'path'      => dirname( __FILE__ . '/templates' ),
+      'path'      => dirname( __FILE__ ) . '/templates',
       'template'  => '/registration-app/register.php',
     ));
 
+    /**
+     * Main Registration view
+     */
     $this->register( 'view', array(
       'name'  => 'registration',
       'url'   => '',
     ) );
 
     /**
-     * @todo: add person schema
+     * Person Schema
      */
+    $this->register( 'schema', array(
+      'post_type' => 'people',
+      'properties'  => array(
+        'first_name'  => array(
+          'meta_key'  => 'ecpt_first-name'
+        ),
+        'last_name' => array(
+          'meta_key'  => 'ecpt_last-name'
+        ),
+        'salutation'  => array(
+          'meta_key'  => 'ecpt_salutation'
+        ),
+        'designation' => array(
+          'meta_key'  => 'ecpt_designation',
+        ),
+        'ministry_status' => array(
+          'meta_key'  => 'ecpt_ministry'
+        ),
+        'street_address' => array(
+          'meta_key'  => 'ecpt_street-address'
+        ),
+        'address_line2' => array(
+          'meta_key'  => 'ecpt_address-line2'
+        ),
+        'city' => array(
+          'meta_key'  => 'ecpt_city'
+        ),
+        'province' => array(
+          'meta_key' => 'ecpt_province',
+        ),
+        'postal_code' => array(
+          'meta_key'  => 'ecpt_postal-code',
+        ),
+        'work_phone'  => array(
+          'meta_key'  => 'ecpt_work-phone'
+        ),
+        'home_phone'  => array(
+          'meta_key'  => 'ecpt_home-phone',
+        ),
+        'mobile_phone' => array(
+          'meta_key'  => 'ecpt_mobile-phone'
+        ),
+        'fax' => array(
+          'meta_key'  => 'ecpt_fax',
+        ),
+        'email' => array(
+          'meta_key'  => 'ecpt_email'
+        ),
+        'second_email'  => array(
+          'meta_key'  => 'ecpt_second-email'
+        ),
+        'website' => array(
+          'meta_key'  => 'ecpt_website'
+        ),
+        'existingvalues' => array(
+          'meta_key'  => '_existingvalues',
+        )
+      ),
+    ));
+
+    /**
+     * Register people search view
+     */
+    $this->register( 'view', array(
+      'name'  => 'people_search',
+      'url'   => 'people/search',
+    ));
 
   }
 
@@ -216,7 +297,7 @@ HTML;
     $options = array();
 
     /**
-     * @todo: implement this function
+     * @todo: implement get_charge_options function
      */
 
     return $options;
@@ -278,7 +359,6 @@ HTML;
    * @return bool
    */
   function post_registration( $args ) {
-    get_template_part( '/registration-app/register.php' );
 
     if ( isset( $args[ 'submit' ] ) ) {
 
@@ -321,26 +401,16 @@ HTML;
   }
 
   /**
-   * Callback to AJAX request to registration view
+   * Callback to AJAX request to people search
    *
    * @param $args
    * @return bool
    */
-  function ajax_registration( $args ) {
-    get_template_part( '/registration-app/register.php' );
+  function ajax_people_search( $args ) {
 
-    switch ( $args[ 'action' ] ) {
-      case 'find_person':
-        /**
-         * @todo: implement code to find person by name
-         */
-        break;
-      default:
-        /**
-         * return failed status
-         */
-        return false;
-    }
+    /**
+     * @todo: implement code to find person by name
+     */
 
     // return true causes ScaleUp to return HTML Status 200 and terminate further execution ( which we want )
     return true;
