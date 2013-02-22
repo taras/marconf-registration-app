@@ -5,7 +5,16 @@
       <?php get_sidebar(); ?>
       <div id="left-area">
           <div class="entry post clearfix">
-            this is registration form
+            <div id="accordion">
+              <h3>New</h3>
+              <div>
+
+              </div>
+              <h3>Existing</h3>
+              <div>
+
+              </div>
+            </div>
           </div> <!-- end .entry -->
       </div>
       <!-- end #left-area -->

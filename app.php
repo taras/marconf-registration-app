@@ -205,6 +205,13 @@ HTML;
       'name'      => 'registration_app_register',
       'path'      => dirname( __FILE__ ) . '/templates',
       'template'  => '/registration-app/register.php',
+      'assets'    => array(
+        'registration_app_register' => array(
+          'type'  => 'script',
+          'src'   => '/registration-app/templates/registration-app/register.js',
+          'deps'  => array( 'jquery' ),
+        )
+      ),
     ));
 
     /**
@@ -283,7 +290,7 @@ HTML;
      */
     $this->register( 'view', array(
       'name'  => 'people_search',
-      'url'   => 'people/search',
+      'url'   => '/people/search',
     ));
 
   }
