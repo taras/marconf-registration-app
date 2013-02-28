@@ -4,8 +4,8 @@
     <div id="content-area" class="clearfix">
       <?php get_sidebar(); ?>
       <div id="left-area">
-        <div class="entry post clearfix">
-          <div class="header">
+        <div class="entry post registration-app clearfix">
+          <div class="header well">
             <h2>“What’s Left?”</h2>
 
             <h3>2013 Annual Meeting</h3>
@@ -20,15 +20,33 @@
               Registration is located at Tantramar Veterans Memorial Civic Centre<br>
               May 31, Thursday, from 11:00 am to 8:30 pm and June 1, Friday, starting at 8:30 am</p>
           </div>
-          <div id="accordion">
-            <h4>New</h4>
-
-            <?php scaleup_the_form( 'new_registrant' ); ?>
-            <h4>Existing</h4>
-
-            <?php scaleup_the_form( 'existing_registrant' ); ?>
+          <div class="accordion" id="accordion">
+            <div class="accordion-group">
+              <div class="accordion-heading">
+                <a class="accordion-toggle" href="#collapseOne">
+                  Existing Registrant
+                </a>
+              </div>
+              <div id="collapseOne" class="accordion-body collapse">
+                <div class="accordion-inner">
+                  <?php scaleup_the_form( 'existing_registrant' ); ?>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-group">
+              <div class="accordion-heading">
+                <a class="accordion-toggle" href="#collapseTwo">
+                  New Registrant
+                </a>
+              </div>
+              <div id="collapseTwo" class="accordion-body collapse">
+                <div class="accordion-inner">
+                  <?php scaleup_the_form( 'new_registrant' ); ?>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="footer">
+          <div class="footer well">
             <p>Following the action of the Conference Sub Executive, March 2011, we continue to work towards reducing
               the cost of printing and mailing of Conference materials. Please note:</p>
             <ul>
@@ -52,5 +70,38 @@
     </div>
     <!-- end #content-area -->
   </div> <!-- end .container -->
+
+  <script type="text/javascript">
+    jQuery(document).ready(function ($) {
+      $('.collapse').hide();
+      $('.accordion-toggle').click(function (e) {
+        $('.collapse').hide();
+        $($(this).attr('href')).show();
+        e.preventDefault();
+      });
+
+      $("#field_person_id").select2({
+        placeholder: "Search by last name",
+        minimumInputLength: 3,
+        ajax: {
+          url: "people/search",
+          dataType: 'json',
+          quietMillis: 300,
+          data: function (term, paged) { // page is the one-based page number tracked by Select2
+            return {
+              s: term, //search term
+            };
+          },
+          results: function (data, paged) {
+            var more = (paged * 10) < data.total; // whether or not there are more results available
+
+            // notice we return the value of more so Select2 knows if more results can be loaded
+            return data;
+          }
+        }
+      });
+    });
+
+  </script>
 
 <?php get_footer(); ?>

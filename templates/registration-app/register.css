@@ -1,0 +1,15 @@
+.wide-field {
+    width: 40%;
+}
+
+.accordion-body {
+    overflow: hidden;
+}
+
+.well.header {
+    text-align: center;
+}
+
+.accordion-heading a {
+    font-size: 18px;
+}

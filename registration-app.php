@@ -41,9 +41,10 @@ add_action( 'scaleup_app_init', function () {
             'validation' => array( 'required' ),
           ),
           'salutation'      => array(
-            'label'   => 'Salutation',
-            'type'    => 'select',
-            'options' => array(
+            'label'    => 'Salutation',
+            'type'     => 'select',
+            'options'  => array(
+              ''       => '',
               'ms.'    => 'Ms.',
               'mr.'    => 'Mr.',
               'mrs.'   => 'Mrs.',
@@ -51,94 +52,120 @@ add_action( 'scaleup_app_init', function () {
               'dr.'    => 'Dr.',
               'rev-dr' => 'Rev. Dr.',
             ),
+            'template' => 'select2',
           ),
           'first_name'      => array(
             'label'      => 'First name',
             'type'       => 'text',
             'validation' => array( 'required' ),
+            'class'      => 'input-large',
           ),
           'last_name'       => array(
             'label'      => 'Last name',
             'type'       => 'text',
             'validation' => array( 'required' ),
+            'class'      => 'input-large',
           ),
           'street_address'  => array(
             'label'      => 'Address',
             'type'       => 'text',
             'validation' => array( 'required' ),
+            'class'      => 'input-large',
           ),
           'address_line2'   => array(
             'label' => 'Address Line 2',
             'type'  => 'text',
+            'class' => 'input-large',
           ),
           'city'            => array(
             'label'      => 'City',
             'type'       => 'text',
             'validation' => array( 'required' ),
+            'class'      => 'input-large',
           ),
           'province'        => array(
             'label'      => 'Province',
             'type'       => 'text',
             'validation' => array( 'required' ),
+            'class'      => 'input-large',
           ),
           'postal_code'     => array(
             'label'      => 'Postal Code',
             'type'       => 'text',
             'validation' => array( 'required' ),
+            'class'      => 'input-large',
           ),
           'country'         => array(
             'label'      => 'Country',
             'type'       => 'text',
             'validation' => array( 'required' ),
+            'class'      => 'input-large',
           ),
           'charge'          => array(
-            'label'   => 'Presbytery & Pastoral Charge',
-            'type'    => 'select',
-            'options' => array( $this, 'get_charge_options' ),
+            'label'    => 'Presbytery & Pastoral Charge',
+            'type'     => 'select',
+            'options'  => array( $this, 'get_charge_options' ),
+            'template' => 'select2',
+            'class'    => 'wide-field',
+            'params'   => array(
+              'placeholder' => 'Select your Presbytery & Pastoral Charge',
+            ),
           ),
           'email'           => array(
             'label'      => 'Email',
             'type'       => 'text',
             'validation' => array( 'email' ),
+            'class'      => 'input-large',
           ),
           'second_email'    => array(
             'label'      => 'CC Email',
             'type'       => 'text',
             'validation' => array( 'email' ),
+            'class'      => 'input-large',
           ),
           'photo'           => array(
             'label' => 'Photo for directory',
             'type'  => 'file',
+            'class' => 'input-large',
           ),
           'work_phone'      => array(
             'label' => 'Work Phone',
             'type'  => 'text',
+            'class' => 'input-large',
           ),
           'home_phone'      => array(
             'label' => 'Home Phone',
             'type'  => 'text',
+            'class' => 'input-large',
           ),
           'mobile_phone'    => array(
             'label' => 'Mobile / Cell Phone',
             'type'  => 'text',
+            'class' => 'input-large',
           ),
           'fax'             => array(
             'label' => 'Fax',
             'type'  => 'text',
+            'class' => 'input-large',
           ),
           'ministry_status' => array(
-            'label'   => 'Ministry Status',
-            'type'    => 'select',
-            'options' => array(
-              'RT' => 'RT - Retired',
-              'SP' => 'SP - Special Ministry',
-              'RN' => 'RN - Retained on the Roll'
+            'label'    => 'Ministry Status',
+            'type'     => 'select',
+            'options'  => array(
+              ''   => '',
+              'RT' => 'Retired',
+              'SP' => 'Special Ministry',
+              'RN' => 'Retained on the Roll',
+            ),
+            'template' => 'select2',
+            'params'   => array(
+              'placeholder' => 'Select your Ministry Status',
             ),
           ),
           'designation'     => array(
-            'label'   => 'Designation',
-            'type'    => 'select',
-            'options' => array(
+            'label'    => 'Designation',
+            'type'     => 'select',
+            'options'  => array(
               ''       => '',
               'OM'     => 'Ordained Minister',
               'DM'     => 'Diaconal Minister',
@@ -155,6 +182,11 @@ add_action( 'scaleup_app_init', function () {
               'IS'     => 'Intern Supply',
               'OS'     => 'Ordained Supply (other denomination)',
             ),
+            'template' => 'select2',
+            'class'    => 'wide-field',
+            'params'   => array(
+              'placeholder' => 'Select your Designation',
+            ),
           ),
           'shuttle_pass'    => array(
             'label'      => 'I will be using the shuttle bus and require a pass.',
@@ -168,6 +200,7 @@ add_action( 'scaleup_app_init', function () {
           'comments'        => array(
             'label' => 'Other Comments?',
             'type'  => 'textarea',
+            'class' => 'input-large',
           ),
           'submit'          => array(
             'type'  => 'button',
@@ -183,10 +216,12 @@ add_action( 'scaleup_app_init', function () {
       $this->register( 'form', array(
         'name'        => 'existing_registrant',
         'form_fields' => array(
-          'person.id' => array(
-            'type'       => 'select',
-            'options'    => array( $this, 'get_people_options' ),
-            'validation' => array( 'required', array( $this, 'is_person' ) )
+          'person_id' => array(
+            'type'        => 'text',
+            'placeholder' => 'Search by last name',
+            'options'     => array( '' => '' ),
+            'validation'  => array( 'required', array( $this, 'is_person' ) ),
+            'class' => 'wide-field',
           ),
           'submit'    => array(
             'type'  => 'button',
@@ -204,10 +239,13 @@ add_action( 'scaleup_app_init', function () {
         'path'     => dirname( __FILE__ ) . '/templates',
         'template' => '/registration-app/register.php',
         'assets'   => array(
-          'registration_app_register' => array(
-            'type' => 'script',
-            'src'  => '/registration-app/templates/registration-app/register.js',
-            'deps' => array( 'jquery' ),
+          'registration_app_bootstrap_css' => array(
+            'type' => 'style',
+            'src'  => '/registration-app/templates/registration-app/bootstrap.css',
+          ),
+          'registration_app_register_css'  => array(
+            'type' => 'style',
+            'src'  => '/registration-app/templates/registration-app/register.css',
           )
         ),
       ) );
@@ -305,25 +343,26 @@ add_action( 'scaleup_app_init', function () {
      * @return array
      */
     function get_charge_options() {
-      $options = array( '' => 'not applicable' );
 
       if ( false === ( $options = get_transient( 'registration-app-charge-options' ) ) ) {
 
+        $options = array( '' => '' );
+
         $parents = get_terms( array( 'directory' ), array(
-          'parent'    => 62,
-        ));
+          'parent' => 62,
+        ) );
 
         foreach ( $parents as $parent ) {
-          $children = get_terms( array( 'directory' ), array(
-            'parent'  => $parent->term_id,
-          ));
+          $children                    = get_terms( array( 'directory' ), array(
+            'parent' => $parent->term_id,
+          ) );
           $options[ $parent->term_id ] = "{$parent->name}";
           foreach ( $children as $child ) {
             $options[ $child->term_id ] = "{$parent->name} - {$child->name}";
           }
         }
 
-        set_transient( 'registration-app-charge-options', $options );
+        set_transient( 'registration-app-charge-options', $options, 60 * 60 * 12 );
 
       }
 
@@ -373,6 +412,7 @@ add_action( 'scaleup_app_init', function () {
      * @return bool
      */
     function get_registration( $args ) {
+
       get_template_part( '/registration-app/register.php' );
 
       // return true causes ScaleUp to return HTML Status 200 and terminate further execution ( which we want )
@@ -404,7 +444,7 @@ add_action( 'scaleup_app_init', function () {
             }
           } else {
             $this->register( 'alert', array(
-              'msg' => 'Your submission did not pass validation. Please, verify the required fields and resubmit.',
+              'msg'  => 'Your submission did not pass validation. Please, verify the required fields and resubmit.',
               'type' => 'warning'
             ) );
           }
@@ -427,11 +467,39 @@ add_action( 'scaleup_app_init', function () {
      * @param $args
      * @return bool
      */
-    function ajax_people_search( $args ) {
+    function get_people_search( $args ) {
 
-      /**
-       * @todo: implement code to find person by name
-       */
+      $query_args = array(
+        'post_type'  => 'people',
+        'post_status'=> 'publish',
+        'meta_query' => array(
+          array(
+            'key'     => 'ecpt_last-name',
+            'compare' => 'LIKE',
+          ),
+        ),
+        'posts_per_page' => -1,
+      );
+      if ( isset( $args[ 's' ] ) ) {
+        $query_args[ 'meta_query' ][ 0 ][ 'value' ] = esc_sql( $args[ 's' ] );
+      }
+
+      $results = array();
+      $query = new WP_Query( $query_args );
+      if ( $query->post_count > 0 ) {
+        $posts = $query->get_posts();
+        foreach ( $posts as $post ) {
+          $p = new stdClass();
+          $p->id = $post->ID;
+          $p->text = $post->post_title;
+          $results[] = $p;
+        }
+      }
+
+      $wrapper = new stdClass();
+      $wrapper->results = $results;
+      header('Content-Type: application/json');
+      echo json_encode( $wrapper );
 
       // return true causes ScaleUp to return HTML Status 200 and terminate further execution ( which we want )
       return true;
