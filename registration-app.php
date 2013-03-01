@@ -58,16 +58,17 @@ add_action( 'scaleup_app_init', function () {
           ),
           'person_id' => array(
             'type'        => 'text',
-            'label'       => 'Enter your "Last Name, First Name" to find your record.',
+            'label'       => 'Enter your "Last Name, First Name" to find your record',
             'placeholder' => 'Search by last name',
             'options'     => array( '' => '' ),
             'validation'  => array( 'required', array( $this, 'is_person' ) ),
             'class'       => 'wide-field',
-            'before'       => '<p class="small">Choose "Not In Directory" if a record for you cannot be found.</p>',
+            'before'      => '<p class="small">or choose "Not in directory" if you are not in the directory or your record cannot be found.</p>',
+            'after'       => '<button id="not-in-directory" class="btn btn-small btn-info">Not In Directory</button>',
           ),
           'fieldset_new_person_open'    => array(
             'type'    => 'html',
-            'content' => '<fieldset id="new-person"><legend>Registrant Information</legend>'
+            'content' => '<fieldset id="new-person"><legend>Create a new record</legend>'
           ),
           'salutation'       => array(
             'label'    => 'Salutation',
@@ -222,14 +223,15 @@ add_action( 'scaleup_app_init', function () {
             'type'  => 'textarea',
             'class' => 'input-large',
           ),
-          'submit'           => array(
-            'type'  => 'button',
-            'value' => 'new_registrant',
-            'text'  => 'Submit'
-          ),
           'fieldset_new_person_close'    => array(
             'type'    => 'html',
             'content' => '</fieldset> <!-- close #new-person ( open_fieldset ) -->',
+          ),
+          'submit'           => array(
+            'type'  => 'button',
+            'value' => 'new_registrant',
+            'text'  => 'Register',
+            'class' => 'btn btn-primary'
           ),
         ),
       ) );
@@ -530,8 +532,9 @@ add_action( 'scaleup_app_init', function () {
     function get_people( $args ) {
 
       if ( isset( $args[ 'id' ] ) && 0 < $args[ 'id' ] ) {
-        $person = get_post( $args[ 'id' ] );
-        setup_postdata( $person );
+        global $post;
+        $post = get_post( $args[ 'id' ] );
+        setup_postdata( $post );
         get_template_part( '/registration-app/person.php' );
       }
 

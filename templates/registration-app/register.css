@@ -17,3 +17,11 @@
 .control-label {
     font-weight: bold;
 }
+
+#personalInformation {
+    margin: 30px 0;
+}
+
+legend {
+    margin-bottom: 0;
+}

@@ -69,14 +69,21 @@
           }
         }
       });
-      $( "#field_person_id").change( function(){
+      $("#not-in-directory").click(function(e){
+        $("#new-person").show();
+        $("#field_person_id").select2( "data", {id: 0, text: "" } );
+        $("#personalInformation").remove();
+        e.preventDefault();
+      });
+      $("#field_person_id").change( function(){
         if ( 0 == $(this).attr( 'value' ) ) {
-          $( "#new-person").show();
+          $("#new-person").show();
         } else {
-          $( "#new-person").hide();
+          $("#new-person").hide();
           var person_id = $(this).attr( 'value' );
-          $.ajax( 'people/'+person_id).done(function(data){
-            console.log( data );
+          $.ajax("people/"+person_id).done(function(data){
+            $("#personalInformation").remove();
+            $("#new-person").before( data );
           });
         }
       })

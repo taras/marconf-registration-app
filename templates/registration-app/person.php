@@ -1,145 +1,28 @@
-<div class="entry post clearfix">
-				<?php if (get_option('envisioned_integration_single_top') <> '' && get_option('envisioned_integrate_singletop_enable') == 'on') echo(get_option('envisioned_integration_single_top')); ?>
+<?php
+global $post;
 
-				<?php //get_template_part('includes/postinfo-person'); ?>
+$thisPerson = get_person_metadata( get_the_ID() );
 
-				<?php
-					$et_envisioned_settings = maybe_unserialize( get_post_meta($post->ID,'et_envisioned_settings',true) );
-					$et_post_type = isset( $et_envisioned_settings['et_post_type'] ) ? (int) $et_envisioned_settings['et_post_type'] : 1;
-				?>
-
-				<?php if ( $et_post_type == 1 ) { ?>
-  <?php //if (get_option('envisioned_thumbnails') == 'on') { ?>
-  <?php
-  $thumb = '';
-  $width = 213;
-  $height = 213;
-  $classtext = 'post-thumb';
-  $titletext = get_the_title();
-  $thumbnail = get_thumbnail($width,$height,$classtext,$titletext,$titletext,false,'Entry');
-  $thumb = $thumbnail["thumb"];
-  ?>
-
-  <?php if($thumb <> '') { ?>
-    <div class="post-thumbnail">
-      <?php print_thumbnail($thumb, $thumbnail["use_timthumb"], $titletext, $width, $height, $classtext); ?>
-      <span class="post-overlay"></span>
-    </div> 	<!-- end .post-thumbnail -->
-  <?php } ?>
-  <?php //} ?>
-<?php } ?>
-
-				<?php if ( $et_post_type == 2 ) { ?>
-  <?php
-  $thumb = '';
-  $width = 608;
-  $height = 9999;
-  $classtext = 'post-gallery-thumb';
-  $titletext = get_the_title();
-  $thumbnail = get_thumbnail($width,$height,$classtext,$titletext,$titletext,true,'Postgallery');
-  $thumb = $thumbnail["thumb"];
-  ?>
-
-  <?php if($thumb <> '') { ?>
-    <div class="post-gallery-thumbnail">
-      <div class="gallery-thumbnail">
-        <a href="<?php echo $thumbnail["fullpath"]; ?>" class="fancybox" title="<?php the_title(); ?>">
-          <?php if ($thumbnail["use_timthumb"]) { ?>
-            <img src="<?php echo(print_thumbnail($thumb, $thumbnail["use_timthumb"], $titletext, $width, $height, $classtext, false, false, false)); ?>" alt="<?php the_title(); ?>" />
-          <?php } else { ?>
-            <?php print_thumbnail($thumb, $thumbnail["use_timthumb"], $titletext, $width, $height, $classtext); ?>
-          <?php } ?>
-          <span class="post-overlay"></span>
-        </a>
-      </div> 	<!-- end .gallery-thumbnail -->
-    </div> 	<!-- end .post-gallery-thumbnail -->
-    <div class="clear"></div>
-  <?php } ?>
-<?php } ?>
-
-				<?php if ( $et_post_type == 3 ) { ?>
-  <div class="post-gallery-thumbnail">
-    <?php
-    $video = get_post_meta($post->ID, 'et_videolink', true);
-    $video_embed = $wp_embed->shortcode( '', $video );
-    if ( $video_embed == '<a href="'.$video.'">'.$video.'</a>' ) $video_embed = $video_manual_embed;
-
-    $video_embed = preg_replace('/<embed /','<embed wmode="transparent" ',$video_embed);
-    $video_embed = preg_replace('/<\/object>/','<param name="wmode" value="transparent" /></object>',$video_embed);
-
-    $video_embed = preg_replace("/width=\"[0-9]*\"/", "width=608", $video_embed);
-    $video_embed = preg_replace("/height=\"[0-9]*\"/", "height=376", $video_embed);
-
-    echo $video_embed;
-    ?>
-  </div> <!-- end .post-gallery-thumbnail -->
-<?php } ?>
-				<?php
-          $thisPerson = get_person_metadata($post->ID);
-          //Set parameters for pre-populating update request form
-          global $current_user;
-          get_currentuserinfo();
-          $_GET['user_email'] = $current_user->user_email;
-          $_GET['user_firstname'] = $current_user->user_firstname;
-          $_GET['user_lastname'] = $current_user->user_lastname;
-
-          foreach($thisPerson as $infoField => $infoValue) {
-            if(!isset($_GET[$infoField])) {
-              $_GET[$infoField] = $infoValue;
-            }
-          }
-          $infoToDisplay = array(
-            'personFormalName',
-            'ministrystatus',
-            'designation',
-            'streetaddress',
-            'addressline2',
-            'cityProvince',
-            'postalcode',
-            'personEmail',
-            'personPhone',
-            'personWebsite');
-        ?>
-  		  <div id="personalInformation">
-          <div class="post entry">
-            <?php
-            foreach($infoToDisplay as $displayOrder => $infoName) {
-              if(trim($thisPerson[$infoName]) != "") {
-                echo $thisPerson[$infoName].'<br />';
-              }
-            }
-            echo '<div class="clear"></div>';
-            echo $thisPerson['personDirectoryOrgs-single'];
-            ?>
-          </div> 	<!-- end .post-->
-        </div>
-        <?php
-        if(!isset($_GET['post_title'])) {
-          $_GET['post_title'] = $post->post_title;
-        }
-        ?>
-        <?php if(is_user_logged_in()): ?>
-  <a href="<?php echo get_bloginfo('home').'/people/'.$post->post_name; ?>" postid="<?php echo $post->ID; ?>" id="viewPersonChangeHistory">Click Here To View Change History.</a>
-  <div id="personChangeHistory">
+$infoToDisplay = array(
+  'personFormalName',
+  'ministrystatus',
+  'designation',
+  'streetaddress',
+  'addressline2',
+  'cityProvince',
+  'postalcode',
+  'personEmail',
+  'personPhone',
+  'personWebsite'
+);
+?>
+<div id="personalInformation">
+  <div class="post entry">
+    <?php the_post_thumbnail( 'thumbnail', array( 'class' => 'alignleft' ) ) ?>
+    <?php foreach ( $infoToDisplay as $displayOrder => $infoName ) : ?>
+      <?php if ( trim( $thisPerson[ $infoName ] ) != "" ) : echo $thisPerson[ $infoName ] . '<br />'; endif; ?>
+    <?php endforeach; ?>
+      <?php echo $thisPerson[ 'personDirectoryOrgs-single' ]; ?>
   </div>
-<?php endif; ?>
-
-        <a href="<?php echo get_bloginfo('home').'/people/'.$post->post_name; ?>" id="openPersonChangeRequest">Click Here If This Person's Info Is Incorrect.</a>
-  	    <div id="personChangeRequest">
-          <?php echo do_shortcode('[gravityform id="7" name="Please update this Person\'s information!" ajax="true"]'); ?>
-        </div>
-  	    <div style="clear: both; margin: 15px;"></div>
-        <?php the_content(); ?>
-
-				<?php wp_link_pages(array('before' => '<p><strong>'.esc_html__('Pages','Envisioned').':</strong> ', 'after' => '</p>', 'next_or_number' => 'number')); ?>
-				<?php edit_post_link(esc_html__('Edit this page','Envisioned')); ?>
-			</div> <!-- end .entry -->
-
-			<?php if (get_option('envisioned_integration_single_bottom') <> '' && get_option('envisioned_integrate_singlebottom_enable') == 'on') echo(get_option('envisioned_integration_single_bottom')); ?>
-
-			<?php if (get_option('envisioned_468_enable') == 'on') { ?>
-  <?php if(get_option('envisioned_468_adsense') <> '') echo(get_option('envisioned_468_adsense'));
-  else { ?>
-    <a href="<?php echo(get_option('envisioned_468_url')); ?>"><img src="<?php echo(get_option('envisioned_468_image')); ?>" alt="468 ad" class="foursixeight" /></a>
-  <?php } ?>
-<?php } ?>
+  <a class="btn btn-warning btn-small" href="<?php echo get_bloginfo( 'home' ) . '/people/' . $post->post_name; ?>">Correct this record</a>
+</div>
