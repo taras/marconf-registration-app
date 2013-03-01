@@ -48,7 +48,7 @@
 
   <script type="text/javascript">
     jQuery(document).ready(function ($) {
-      $( "#new-person").hide();
+      $( "#new-person, #field_submit").hide();
       $( "#field_person_id" ).select2({
         placeholder: 'Search by "Last Name, First Name"',
         minimumInputLength: 3,
@@ -73,11 +73,13 @@
         $("#new-person").show();
         $("#field_person_id").select2( "data", {id: 0, text: "" } );
         $("#personalInformation").remove();
+        $('#field_submit').show();
         e.preventDefault();
       });
       $("#field_person_id").change( function(){
         if ( 0 == $(this).attr( 'value' ) ) {
           $("#new-person").show();
+          $('#field_submit').show();
         } else {
           $("#new-person").hide();
           var person_id = $(this).attr( 'value' );
@@ -85,6 +87,7 @@
             $("#personalInformation").remove();
             $("#new-person").before( data );
           });
+          $('#field_submit').show();
         }
       })
     });
