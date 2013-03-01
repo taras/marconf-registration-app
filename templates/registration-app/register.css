@@ -13,3 +13,7 @@
 .accordion-heading a {
     font-size: 18px;
 }
+
+.control-label {
+    font-weight: bold;
+}

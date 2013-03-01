@@ -20,32 +20,7 @@
               Registration is located at Tantramar Veterans Memorial Civic Centre<br>
               May 31, Thursday, from 11:00 am to 8:30 pm and June 1, Friday, starting at 8:30 am</p>
           </div>
-          <div class="accordion" id="accordion">
-            <div class="accordion-group">
-              <div class="accordion-heading">
-                <a class="accordion-toggle" href="#collapseOne">
-                  Existing Registrant
-                </a>
-              </div>
-              <div id="collapseOne" class="accordion-body collapse">
-                <div class="accordion-inner">
-                  <?php scaleup_the_form( 'existing_registrant' ); ?>
-                </div>
-              </div>
-            </div>
-            <div class="accordion-group">
-              <div class="accordion-heading">
-                <a class="accordion-toggle" href="#collapseTwo">
-                  New Registrant
-                </a>
-              </div>
-              <div id="collapseTwo" class="accordion-body collapse">
-                <div class="accordion-inner">
-                  <?php scaleup_the_form( 'new_registrant' ); ?>
-                </div>
-              </div>
-            </div>
-          </div>
+          <?php scaleup_the_form( 'registration' ); ?>
           <div class="footer well">
             <p>Following the action of the Conference Sub Executive, March 2011, we continue to work towards reducing
               the cost of printing and mailing of Conference materials. Please note:</p>
@@ -73,15 +48,9 @@
 
   <script type="text/javascript">
     jQuery(document).ready(function ($) {
-      $('.collapse').hide();
-      $('.accordion-toggle').click(function (e) {
-        $('.collapse').hide();
-        $($(this).attr('href')).show();
-        e.preventDefault();
-      });
-
-      $("#field_person_id").select2({
-        placeholder: "Search by last name",
+      $( "#new-person").hide();
+      $( "#field_person_id" ).select2({
+        placeholder: 'Search by "Last Name, First Name"',
         minimumInputLength: 3,
         ajax: {
           url: "people/search",
@@ -100,6 +69,17 @@
           }
         }
       });
+      $( "#field_person_id").change( function(){
+        if ( 0 == $(this).attr( 'value' ) ) {
+          $( "#new-person").show();
+        } else {
+          $( "#new-person").hide();
+          var person_id = $(this).attr( 'value' );
+          $.ajax( 'people/'+person_id).done(function(data){
+            console.log( data );
+          });
+        }
+      })
     });
 
   </script>

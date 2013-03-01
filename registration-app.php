@@ -21,26 +21,55 @@ add_action( 'scaleup_app_init', function () {
        * New User Form
        */
       $this->register( 'form', array(
-        'name'        => 'new_registrant',
+        'name'        => 'registration',
         'form_fields' => array(
-          'attributes'      => array(
-            'label'      => 'Check all that apply.',
-            'type'       => 'checkbox',
-            'options'    => array(
-              'female'             => 'Female',
-              'male'               => 'Male',
-              'delegate'           => 'Delegate',
-              'new-delegate'       => 'New Delegate',
-              'visitor'            => 'Visitor',
-              'ministry-personnel' => 'Ministry Personnel',
-              'lay'                => 'Lay',
-              'resource-person'    => 'Resource Person',
-              '2012-ordinand'      => '2012 Ordinand / Commissionand',
-              'ecumenical'         => 'Ecumenical Guest',
+          'attributes'       => array(
+            'label'   => 'Check all that apply.',
+            'type'    => 'checkbox',
+            'options' => array(
+              'delegate'        => 'Delegate',
+              'new-delegate'    => 'New Delegate',
+              'visitor'         => 'Visitor',
+              'resource-person' => 'Resource Person',
+              '2012-ordinand'   => '2012 Ordinand / Commissionand',
+              'ecumenical'      => 'Ecumenical Guest',
             ),
-            'validation' => array( 'required' ),
           ),
-          'salutation'      => array(
+          'type_of_delegate' => array(
+            'label'   => 'What type of delegate are you?',
+            'type'    => 'radio',
+            'options' => array(
+              '711' => 'Ministry Personnel',
+              '382' => 'Lay',
+            ),
+          ),
+          'shuttle_pass'     => array(
+            'label'      => 'I will be using the shuttle bus and require a pass.',
+            'validation' => array( 'required' ),
+            'type'       => 'radio',
+            'options'    => array(
+              '0' => 'No',
+              '1' => 'Yes'
+            ),
+          ),
+          'info'    => array(
+            'type'    => 'html',
+            'content' => '<p class="alert alert-info">If you attended Annual Conference in 2011 or 2012 then your information should already be on file in our website Directory.</p>'
+          ),
+          'person_id' => array(
+            'type'        => 'text',
+            'label'       => 'Enter your "Last Name, First Name" to find your record.',
+            'placeholder' => 'Search by last name',
+            'options'     => array( '' => '' ),
+            'validation'  => array( 'required', array( $this, 'is_person' ) ),
+            'class'       => 'wide-field',
+            'before'       => '<p class="small">Choose "Not In Directory" if a record for you cannot be found.</p>',
+          ),
+          'fieldset_new_person_open'    => array(
+            'type'    => 'html',
+            'content' => '<fieldset id="new-person"><legend>Registrant Information</legend>'
+          ),
+          'salutation'       => array(
             'label'    => 'Salutation',
             'type'     => 'select',
             'options'  => array(
@@ -54,54 +83,54 @@ add_action( 'scaleup_app_init', function () {
             ),
             'template' => 'select2',
           ),
-          'first_name'      => array(
+          'first_name'       => array(
             'label'      => 'First name',
             'type'       => 'text',
             'validation' => array( 'required' ),
             'class'      => 'input-large',
           ),
-          'last_name'       => array(
+          'last_name'        => array(
             'label'      => 'Last name',
             'type'       => 'text',
             'validation' => array( 'required' ),
             'class'      => 'input-large',
           ),
-          'street_address'  => array(
+          'street_address'   => array(
             'label'      => 'Address',
             'type'       => 'text',
             'validation' => array( 'required' ),
             'class'      => 'input-large',
           ),
-          'address_line2'   => array(
+          'address_line2'    => array(
             'label' => 'Address Line 2',
             'type'  => 'text',
             'class' => 'input-large',
           ),
-          'city'            => array(
+          'city'             => array(
             'label'      => 'City',
             'type'       => 'text',
             'validation' => array( 'required' ),
             'class'      => 'input-large',
           ),
-          'province'        => array(
+          'province'         => array(
             'label'      => 'Province',
             'type'       => 'text',
             'validation' => array( 'required' ),
             'class'      => 'input-large',
           ),
-          'postal_code'     => array(
+          'postal_code'      => array(
             'label'      => 'Postal Code',
             'type'       => 'text',
             'validation' => array( 'required' ),
             'class'      => 'input-large',
           ),
-          'country'         => array(
+          'country'          => array(
             'label'      => 'Country',
             'type'       => 'text',
             'validation' => array( 'required' ),
             'class'      => 'input-large',
           ),
-          'charge'          => array(
+          'charge'           => array(
             'label'    => 'Presbytery & Pastoral Charge',
             'type'     => 'select',
             'options'  => array( $this, 'get_charge_options' ),
@@ -111,44 +140,44 @@ add_action( 'scaleup_app_init', function () {
               'placeholder' => 'Select your Presbytery & Pastoral Charge',
             ),
           ),
-          'email'           => array(
+          'email'            => array(
             'label'      => 'Email',
             'type'       => 'text',
             'validation' => array( 'email' ),
             'class'      => 'input-large',
           ),
-          'second_email'    => array(
-            'label'      => 'CC Email',
+          'second_email'     => array(
+            'label'      => 'Second Email',
             'type'       => 'text',
             'validation' => array( 'email' ),
             'class'      => 'input-large',
           ),
-          'photo'           => array(
+          'photo'            => array(
             'label' => 'Photo for directory',
             'type'  => 'file',
             'class' => 'input-large',
           ),
-          'work_phone'      => array(
+          'work_phone'       => array(
             'label' => 'Work Phone',
             'type'  => 'text',
             'class' => 'input-large',
           ),
-          'home_phone'      => array(
+          'home_phone'       => array(
             'label' => 'Home Phone',
             'type'  => 'text',
             'class' => 'input-large',
           ),
-          'mobile_phone'    => array(
+          'mobile_phone'     => array(
             'label' => 'Mobile / Cell Phone',
             'type'  => 'text',
             'class' => 'input-large',
           ),
-          'fax'             => array(
+          'fax'              => array(
             'label' => 'Fax',
             'type'  => 'text',
             'class' => 'input-large',
           ),
-          'ministry_status' => array(
+          'ministry_status'  => array(
             'label'    => 'Ministry Status',
             'type'     => 'select',
             'options'  => array(
@@ -162,7 +191,7 @@ add_action( 'scaleup_app_init', function () {
               'placeholder' => 'Select your Ministry Status',
             ),
           ),
-          'designation'     => array(
+          'designation'      => array(
             'label'    => 'Designation',
             'type'     => 'select',
             'options'  => array(
@@ -188,46 +217,20 @@ add_action( 'scaleup_app_init', function () {
               'placeholder' => 'Select your Designation',
             ),
           ),
-          'shuttle_pass'    => array(
-            'label'      => 'I will be using the shuttle bus and require a pass.',
-            'validation' => array( 'required' ),
-            'type'       => 'radio',
-            'options'    => array(
-              '0' => 'No',
-              '1' => 'Yes'
-            ),
-          ),
-          'comments'        => array(
+          'comments'         => array(
             'label' => 'Other Comments?',
             'type'  => 'textarea',
             'class' => 'input-large',
           ),
-          'submit'          => array(
+          'submit'           => array(
             'type'  => 'button',
             'value' => 'new_registrant',
             'text'  => 'Submit'
-          )
-        ),
-      ) );
-
-      /**
-       * Register the existing user form
-       */
-      $this->register( 'form', array(
-        'name'        => 'existing_registrant',
-        'form_fields' => array(
-          'person_id' => array(
-            'type'        => 'text',
-            'placeholder' => 'Search by last name',
-            'options'     => array( '' => '' ),
-            'validation'  => array( 'required', array( $this, 'is_person' ) ),
-            'class' => 'wide-field',
           ),
-          'submit'    => array(
-            'type'  => 'button',
-            'value' => 'existing_registrant',
-            'text'  => 'Submit',
-          )
+          'fieldset_new_person_close'    => array(
+            'type'    => 'html',
+            'content' => '</fieldset> <!-- close #new-person ( open_fieldset ) -->',
+          ),
         ),
       ) );
 
@@ -251,10 +254,11 @@ add_action( 'scaleup_app_init', function () {
       ) );
 
       $this->register( 'template', array(
-        'template' => '/graph/piechart.php',
+        'name'     => 'registration_app_register_person',
         'path'     => dirname( __FILE__ ) . '/templates',
-        'delay'    => true,
+        'template' => '/registration-app/person.php',
       ) );
+
 
       /**
        * Main Registration view
@@ -334,6 +338,14 @@ add_action( 'scaleup_app_init', function () {
         'name' => 'people_search',
         'url'  => '/people/search',
       ) );
+
+      /**
+       * Register people view
+       */
+      $this->register( 'view', array(
+        'name'  => 'people',
+        'url'   => '/people/{id}'
+      ));
 
     }
 
@@ -470,9 +482,9 @@ add_action( 'scaleup_app_init', function () {
     function get_people_search( $args ) {
 
       $query_args = array(
-        'post_type'  => 'people',
-        'post_status'=> 'publish',
-        'meta_query' => array(
+        'post_type'      => 'people',
+        'post_status'    => 'publish',
+        'meta_query'     => array(
           array(
             'key'     => 'ecpt_last-name',
             'compare' => 'LIKE',
@@ -484,24 +496,45 @@ add_action( 'scaleup_app_init', function () {
         $query_args[ 'meta_query' ][ 0 ][ 'value' ] = esc_sql( $args[ 's' ] );
       }
 
+      $p          = new stdClass();
+      $p->id      = 0;
+      $p->text    = 'Not In Directory';
+
       $results = array();
-      $query = new WP_Query( $query_args );
+      $results[] =  $p;
+      $query   = new WP_Query( $query_args );
       if ( $query->post_count > 0 ) {
         $posts = $query->get_posts();
         foreach ( $posts as $post ) {
-          $p = new stdClass();
-          $p->id = $post->ID;
-          $p->text = $post->post_title;
-          $results[] = $p;
+          $p          = new stdClass();
+          $p->id      = $post->ID;
+          $p->text    = $post->post_title;
+          $results[ ] = $p;
         }
       }
 
-      $wrapper = new stdClass();
+      $wrapper          = new stdClass();
       $wrapper->results = $results;
-      header('Content-Type: application/json');
+      header( 'Content-Type: application/json' );
       echo json_encode( $wrapper );
 
       // return true causes ScaleUp to return HTML Status 200 and terminate further execution ( which we want )
+      return true;
+    }
+
+    /**
+     * Callback function for /people/{id} ajax call
+     * @param $args
+     * @return bool
+     */
+    function get_people( $args ) {
+
+      if ( isset( $args[ 'id' ] ) && 0 < $args[ 'id' ] ) {
+        $person = get_post( $args[ 'id' ] );
+        setup_postdata( $person );
+        get_template_part( '/registration-app/person.php' );
+      }
+
       return true;
     }
 
