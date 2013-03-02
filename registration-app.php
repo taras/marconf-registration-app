@@ -22,6 +22,16 @@ add_action( 'scaleup_app_init', function () {
        */
       $this->register( 'form', array(
         'name'        => 'registration',
+        'notify'      => array(
+          'email' => array(
+            'to'      => array( 'tarasm@gmail.com' ),
+            'from'    => array( 'admin@example.com' ),
+            'subject' => 'You are registered to the 2013 Annual Meeting',
+          ),
+        ),
+        'store' => array(
+          'schemas' => array( 'person' )
+        ),
         'form_fields' => array(
           'attributes'       => array(
             'label'   => 'Check all that apply.',
@@ -451,24 +461,7 @@ add_action( 'scaleup_app_init', function () {
 
       /** @var $form ScaleUp_Form */
       $form = $this->get_feature( 'form', $args[ 'form_name' ] );
-      $form->load( $args );
-      if ( $form->validates() ) {
-        $person = get_item( 'person' );
-        $person->load( $args );
-        $result = $person->save();
-        if ( is_wp_error( $result ) ) {
-          $this->register( 'message', array(
-            'text' => $result->get_error_message(),
-            'type' => 'error'
-          ) );
-        }
-      } else {
-        $this->register( 'alert', array(
-          'msg'  => 'Your submission did not pass validation. Please, verify the required fields and resubmit.',
-          'type' => 'warning'
-        ) );
-      }
-
+      $form->process( $args );
       get_template_part( '/registration-app/register.php' );
 
       // return true causes ScaleUp to return HTML Status 200 and terminate further execution ( which we want )
