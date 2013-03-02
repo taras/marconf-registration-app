@@ -48,7 +48,6 @@
 
   <script type="text/javascript">
     jQuery(document).ready(function ($) {
-      $( "#new-person, #field_submit").hide();
       $( "#field_person_id" ).select2({
         placeholder: 'Search by "Last Name, First Name"',
         minimumInputLength: 3,
@@ -58,7 +57,7 @@
           quietMillis: 300,
           data: function (term, paged) { // page is the one-based page number tracked by Select2
             return {
-              s: term, //search term
+              s: term //search term
             };
           },
           results: function (data, paged) {
@@ -69,15 +68,20 @@
           }
         }
       });
+      // only hide new registration form if field_person_id is set to -1, meaning that record is not in directory
+      if ( -1 != $("#field_person_id").attr( 'value' ) ) {
+        $( "#new-person, #field_submit").hide();
+      }
       $("#not-in-directory").click(function(e){
         $("#new-person").show();
-        $("#field_person_id").select2( "data", {id: 0, text: "" } );
+        $("#field_person_id").select2( "data", {id: -1, text: "" } );
         $("#personalInformation").remove();
         $('#field_submit').show();
         e.preventDefault();
       });
       $("#field_person_id").change( function(){
         if ( 0 == $(this).attr( 'value' ) ) {
+          $("#field_person_id").select2( "data", { id: -1, text: "" } );
           $("#new-person").show();
           $('#field_submit').show();
         } else {
@@ -91,7 +95,6 @@
         }
       })
     });
-
   </script>
 
 <?php get_footer(); ?>

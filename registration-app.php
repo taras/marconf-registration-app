@@ -41,6 +41,7 @@ add_action( 'scaleup_app_init', function () {
             'options' => array(
               '711' => 'Ministry Personnel',
               '382' => 'Lay',
+              ''    => 'Other',
             ),
           ),
           'shuttle_pass'     => array(
@@ -61,7 +62,7 @@ add_action( 'scaleup_app_init', function () {
             'label'       => 'Enter your "Last Name, First Name" to find your record',
             'placeholder' => 'Search by last name',
             'options'     => array( '' => '' ),
-            'validation'  => array( 'required', array( $this, 'is_person' ) ),
+            'validation'  => array( array( $this, 'is_person' ) ),
             'class'       => 'wide-field',
             'before'      => '<p class="small">or choose "Not in directory" if you are not in the directory or your record cannot be found.</p>',
             'after'       => '<button id="not-in-directory" class="btn btn-small btn-info">Not In Directory</button>',
@@ -441,32 +442,32 @@ add_action( 'scaleup_app_init', function () {
      */
     function post_registration( $args ) {
 
-      switch ( $args[ 'form_name' ] ) :
-        case 'new_registrant':
-        case 'existing_registrant':
-          $form = $this->get_feature( 'form', $args[ 'form_name' ] );
-          $form->load( $args );
-          if ( $form->validates() ) {
-            $person = get_item( 'person' );
-            $person->load( $args );
-            $result = $person->save();
-            if ( is_wp_error( $result ) ) {
-              $this->register( 'message', array(
-                'text' => $result->get_error_message(),
-                'type' => 'error'
-              ) );
-            }
-          } else {
-            $this->register( 'alert', array(
-              'msg'  => 'Your submission did not pass validation. Please, verify the required fields and resubmit.',
-              'type' => 'warning'
-            ) );
-          }
-          break;
-        default:
-          // we got a submission without from non existant form - something went borked, let's return a 404
-          return false;
-      endswitch;
+      /**
+       * sanity check, cause the only thing that's happening here is related to registration form
+       */
+      if ( 'registration' != $args[ 'form_name' ] ) {
+        return false;
+      }
+
+      /** @var $form ScaleUp_Form */
+      $form = $this->get_feature( 'form', $args[ 'form_name' ] );
+      $form->load( $args );
+      if ( $form->validates() ) {
+        $person = get_item( 'person' );
+        $person->load( $args );
+        $result = $person->save();
+        if ( is_wp_error( $result ) ) {
+          $this->register( 'message', array(
+            'text' => $result->get_error_message(),
+            'type' => 'error'
+          ) );
+        }
+      } else {
+        $this->register( 'alert', array(
+          'msg'  => 'Your submission did not pass validation. Please, verify the required fields and resubmit.',
+          'type' => 'warning'
+        ) );
+      }
 
       get_template_part( '/registration-app/register.php' );
 
@@ -499,7 +500,7 @@ add_action( 'scaleup_app_init', function () {
       }
 
       $p          = new stdClass();
-      $p->id      = 0;
+      $p->id      = -1;
       $p->text    = 'Not In Directory';
 
       $results = array();
