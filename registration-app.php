@@ -23,17 +23,18 @@ add_action( 'scaleup_app_init', function () {
       $this->register( 'form', array(
         'name'        => 'registration',
         'notify'      => array(
-          'email' => array(
-            'to'      => array( 'tarasm@gmail.com' ),
-            'from'    => array( 'admin@example.com' ),
+          array(
+            'method'  => 'email',
+            'to'      => array( $this, '_get_email' ),
             'subject' => 'You are registered to the 2013 Annual Meeting',
+            'message' => 'We look forward to seeing you.',
           ),
         ),
-        'store' => array(
+        'store'       => array(
           'schemas' => array( 'person' )
         ),
         'form_fields' => array(
-          'attributes'       => array(
+          'attributes'                => array(
             'label'   => 'Check all that apply.',
             'type'    => 'checkbox',
             'options' => array(
@@ -45,16 +46,15 @@ add_action( 'scaleup_app_init', function () {
               'ecumenical'      => 'Ecumenical Guest',
             ),
           ),
-          'type_of_delegate' => array(
+          'delegate'                  => array(
             'label'   => 'What type of delegate are you?',
             'type'    => 'radio',
             'options' => array(
               '711' => 'Ministry Personnel',
               '382' => 'Lay',
-              ''    => 'Other',
             ),
           ),
-          'shuttle_pass'     => array(
+          'shuttle_pass'              => array(
             'label'      => 'I will be using the shuttle bus and require a pass.',
             'validation' => array( 'required' ),
             'type'       => 'radio',
@@ -63,11 +63,11 @@ add_action( 'scaleup_app_init', function () {
               '1' => 'Yes'
             ),
           ),
-          'info'    => array(
+          'info'                      => array(
             'type'    => 'html',
             'content' => '<p class="alert alert-info">If you attended Annual Conference in 2011 or 2012 then your information should already be on file in our website Directory.</p>'
           ),
-          'person_id' => array(
+          'person_id'                 => array(
             'type'        => 'text',
             'label'       => 'Enter your "Last Name, First Name" to find your record',
             'placeholder' => 'Search by last name',
@@ -77,11 +77,11 @@ add_action( 'scaleup_app_init', function () {
             'before'      => '<p class="small">or choose "Not in directory" if you are not in the directory or your record cannot be found.</p>',
             'after'       => '<button id="not-in-directory" class="btn btn-small btn-info">Not In Directory</button>',
           ),
-          'fieldset_new_person_open'    => array(
+          'fieldset_new_person_open'  => array(
             'type'    => 'html',
             'content' => '<fieldset id="new-person"><legend>Create a new record</legend>'
           ),
-          'salutation'       => array(
+          'salutation'                => array(
             'label'    => 'Salutation',
             'type'     => 'select',
             'options'  => array(
@@ -95,54 +95,54 @@ add_action( 'scaleup_app_init', function () {
             ),
             'template' => 'select2',
           ),
-          'first_name'       => array(
+          'first_name'                => array(
             'label'      => 'First name',
             'type'       => 'text',
             'validation' => array( 'required' ),
             'class'      => 'input-large',
           ),
-          'last_name'        => array(
+          'last_name'                 => array(
             'label'      => 'Last name',
             'type'       => 'text',
             'validation' => array( 'required' ),
             'class'      => 'input-large',
           ),
-          'street_address'   => array(
+          'street_address'            => array(
             'label'      => 'Address',
             'type'       => 'text',
             'validation' => array( 'required' ),
             'class'      => 'input-large',
           ),
-          'address_line2'    => array(
+          'address_line2'             => array(
             'label' => 'Address Line 2',
             'type'  => 'text',
             'class' => 'input-large',
           ),
-          'city'             => array(
+          'city'                      => array(
             'label'      => 'City',
             'type'       => 'text',
             'validation' => array( 'required' ),
             'class'      => 'input-large',
           ),
-          'province'         => array(
+          'province'                  => array(
             'label'      => 'Province',
             'type'       => 'text',
             'validation' => array( 'required' ),
             'class'      => 'input-large',
           ),
-          'postal_code'      => array(
+          'postal_code'               => array(
             'label'      => 'Postal Code',
             'type'       => 'text',
             'validation' => array( 'required' ),
             'class'      => 'input-large',
           ),
-          'country'          => array(
+          'country'                   => array(
             'label'      => 'Country',
             'type'       => 'text',
             'validation' => array( 'required' ),
             'class'      => 'input-large',
           ),
-          'charge'           => array(
+          'charge'                    => array(
             'label'    => 'Presbytery & Pastoral Charge',
             'type'     => 'select',
             'options'  => array( $this, 'get_charge_options' ),
@@ -152,44 +152,44 @@ add_action( 'scaleup_app_init', function () {
               'placeholder' => 'Select your Presbytery & Pastoral Charge',
             ),
           ),
-          'email'            => array(
+          'email'                     => array(
             'label'      => 'Email',
             'type'       => 'text',
             'validation' => array( 'email' ),
             'class'      => 'input-large',
           ),
-          'second_email'     => array(
+          'second_email'              => array(
             'label'      => 'Second Email',
             'type'       => 'text',
             'validation' => array( 'email' ),
             'class'      => 'input-large',
           ),
-          'photo'            => array(
+          'photo'                     => array(
             'label' => 'Photo for directory',
             'type'  => 'file',
             'class' => 'input-large',
           ),
-          'work_phone'       => array(
+          'work_phone'                => array(
             'label' => 'Work Phone',
             'type'  => 'text',
             'class' => 'input-large',
           ),
-          'home_phone'       => array(
+          'home_phone'                => array(
             'label' => 'Home Phone',
             'type'  => 'text',
             'class' => 'input-large',
           ),
-          'mobile_phone'     => array(
+          'mobile_phone'              => array(
             'label' => 'Mobile / Cell Phone',
             'type'  => 'text',
             'class' => 'input-large',
           ),
-          'fax'              => array(
+          'fax'                       => array(
             'label' => 'Fax',
             'type'  => 'text',
             'class' => 'input-large',
           ),
-          'ministry_status'  => array(
+          'ministry_status'           => array(
             'label'    => 'Ministry Status',
             'type'     => 'select',
             'options'  => array(
@@ -203,7 +203,7 @@ add_action( 'scaleup_app_init', function () {
               'placeholder' => 'Select your Ministry Status',
             ),
           ),
-          'designation'      => array(
+          'designation'               => array(
             'label'    => 'Designation',
             'type'     => 'select',
             'options'  => array(
@@ -229,16 +229,21 @@ add_action( 'scaleup_app_init', function () {
               'placeholder' => 'Select your Designation',
             ),
           ),
-          'comments'         => array(
+          'comments'                  => array(
             'label' => 'Other Comments?',
             'type'  => 'textarea',
             'class' => 'input-large',
           ),
-          'fieldset_new_person_close'    => array(
+          'fieldset_new_person_close' => array(
             'type'    => 'html',
             'content' => '</fieldset> <!-- close #new-person ( open_fieldset ) -->',
           ),
-          'submit'           => array(
+          'conferences'               => array(
+            'type'   => 'hidden',
+            'value'  => 'name=2013',
+            'format' => 'args_string',
+          ),
+          'submit'                    => array(
             'type'  => 'button',
             'value' => 'new_registrant',
             'text'  => 'Register',
@@ -284,63 +289,73 @@ add_action( 'scaleup_app_init', function () {
       /**
        * Person Schema
        */
-      $this->register( 'schema', array(
-        'post_type'  => 'people',
-        'properties' => array(
-          'first_name'      => array(
-            'meta_key' => 'ecpt_first-name'
-          ),
-          'last_name'       => array(
-            'meta_key' => 'ecpt_last-name'
-          ),
-          'salutation'      => array(
-            'meta_key' => 'ecpt_salutation'
-          ),
-          'designation'     => array(
-            'meta_key' => 'ecpt_designation',
-          ),
-          'ministry_status' => array(
-            'meta_key' => 'ecpt_ministry'
-          ),
-          'street_address'  => array(
-            'meta_key' => 'ecpt_street-address'
-          ),
-          'address_line2'   => array(
-            'meta_key' => 'ecpt_address-line2'
-          ),
-          'city'            => array(
-            'meta_key' => 'ecpt_city'
-          ),
-          'province'        => array(
-            'meta_key' => 'ecpt_province',
-          ),
-          'postal_code'     => array(
-            'meta_key' => 'ecpt_postal-code',
-          ),
-          'work_phone'      => array(
-            'meta_key' => 'ecpt_work-phone'
-          ),
-          'home_phone'      => array(
-            'meta_key' => 'ecpt_home-phone',
-          ),
-          'mobile_phone'    => array(
-            'meta_key' => 'ecpt_mobile-phone'
-          ),
-          'fax'             => array(
-            'meta_key' => 'ecpt_fax',
-          ),
-          'email'           => array(
-            'meta_key' => 'ecpt_email'
-          ),
-          'second_email'    => array(
-            'meta_key' => 'ecpt_second-email'
-          ),
-          'website'         => array(
-            'meta_key' => 'ecpt_website'
-          ),
-          'existingvalues'  => array(
-            'meta_key' => '_existingvalues',
-          )
+      register_schema( 'people', array(
+        'post_type'       => 'people',
+        'first_name'      => array(
+          'meta_key' => 'ecpt_first-name'
+        ),
+        'last_name'       => array(
+          'meta_key' => 'ecpt_last-name'
+        ),
+        'salutation'      => array(
+          'meta_key' => 'ecpt_salutation'
+        ),
+        'designation'     => array(
+          'meta_key' => 'ecpt_designation',
+        ),
+        'ministry_status' => array(
+          'meta_key' => 'ecpt_ministry'
+        ),
+        'street_address'  => array(
+          'meta_key' => 'ecpt_street-address'
+        ),
+        'address_line2'   => array(
+          'meta_key' => 'ecpt_address-line2'
+        ),
+        'city'            => array(
+          'meta_key' => 'ecpt_city'
+        ),
+        'province'        => array(
+          'meta_key' => 'ecpt_province',
+        ),
+        'postal_code'     => array(
+          'meta_key' => 'ecpt_postal-code',
+        ),
+        'work_phone'      => array(
+          'meta_key' => 'ecpt_work-phone'
+        ),
+        'home_phone'      => array(
+          'meta_key' => 'ecpt_home-phone',
+        ),
+        'mobile_phone'    => array(
+          'meta_key' => 'ecpt_mobile-phone'
+        ),
+        'fax'             => array(
+          'meta_key' => 'ecpt_fax',
+        ),
+        'email'           => array(
+          'meta_key' => 'ecpt_email'
+        ),
+        'second_email'    => array(
+          'meta_key' => 'ecpt_second-email'
+        ),
+        'website'         => array(
+          'meta_key' => 'ecpt_website'
+        ),
+        'existingvalues'  => array(
+          'meta_key' => '_existingvalues',
+        ),
+        'directory'       => array(
+          'type'     => 'taxonomy',
+          'taxonomy' => 'directory',
+        ),
+        'delegate'        => array(
+          'type'     => 'taxonomy',
+          'taxonomy' => 'directory',
+        ),
+        'conferences'     => array(
+          'type'     => 'taxonomy',
+          'taxonomy' => 'conferences',
         ),
       ) );
 
@@ -356,9 +371,9 @@ add_action( 'scaleup_app_init', function () {
        * Register people view
        */
       $this->register( 'view', array(
-        'name'  => 'people',
-        'url'   => '/people/{id}'
-      ));
+        'name' => 'people',
+        'url'  => '/people/{id}'
+      ) );
 
     }
 
@@ -459,8 +474,11 @@ add_action( 'scaleup_app_init', function () {
         return false;
       }
 
+      $item = new_item( 'people' );
+
       /** @var $form ScaleUp_Form */
-      $form = $this->get_feature( 'form', $args[ 'form_name' ] );
+      $form = $this->get_feature( 'form', 'registration' );
+      $form->add_action( 'store', array( $item, 'create' ) );
       $form->process( $args );
       get_template_part( '/registration-app/register.php' );
 
@@ -492,13 +510,13 @@ add_action( 'scaleup_app_init', function () {
         $query_args[ 'meta_query' ][ 0 ][ 'value' ] = esc_sql( $args[ 's' ] );
       }
 
-      $p          = new stdClass();
-      $p->id      = -1;
-      $p->text    = 'Not In Directory';
+      $p       = new stdClass();
+      $p->id   = -1;
+      $p->text = 'Not In Directory';
 
-      $results = array();
-      $results[] =  $p;
-      $query   = new WP_Query( $query_args );
+      $results    = array();
+      $results[ ] = $p;
+      $query      = new WP_Query( $query_args );
       if ( $query->post_count > 0 ) {
         $posts = $query->get_posts();
         foreach ( $posts as $post ) {
@@ -533,6 +551,19 @@ add_action( 'scaleup_app_init', function () {
       }
 
       return true;
+    }
+
+    /**
+     * Return email of the registrant
+     *
+     * @param $form ScaleUp_Form
+     * @return string
+     */
+    function _get_email( $form ) {
+      $form  = $this->get_feature( 'form', 'registration' );
+      $field = $form->get_feature( 'form_field', 'email' );
+
+      return $field->get( 'value' );
     }
 
   }

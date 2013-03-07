@@ -20,7 +20,7 @@
               Registration is located at Tantramar Veterans Memorial Civic Centre<br>
               May 31, Thursday, from 11:00 am to 8:30 pm and June 1, Friday, starting at 8:30 am</p>
           </div>
-          <?php scaleup_the_form( 'registration' ); ?>
+          <?php the_form( 'registration' ); ?>
           <div class="footer well">
             <p>Following the action of the Conference Sub Executive, March 2011, we continue to work towards reducing
               the cost of printing and mailing of Conference materials. Please note:</p>
@@ -69,7 +69,7 @@
         }
       });
       // only hide new registration form if field_person_id is set to -1, meaning that record is not in directory
-      if ( -1 != $("#field_person_id").attr( 'value' ) ) {
+      if ( ( -1 != $("#field_person_id").attr( 'value' ) ) || ( "" == $("#field_person_id").attr( 'value' ) )  ) {
         $( "#new-person, #field_submit").hide();
       }
       $("#not-in-directory").click(function(e){
