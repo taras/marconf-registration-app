@@ -38,12 +38,12 @@ add_action( 'scaleup_app_init', function () {
             'label'   => 'Check all that apply.',
             'type'    => 'checkbox',
             'options' => array(
-              'delegate'        => 'Delegate',
-              'new-delegate'    => 'New Delegate',
-              'visitor'         => 'Visitor',
-              'resource-person' => 'Resource Person',
-              '2012-ordinand'   => '2012 Ordinand / Commissionand',
-              'ecumenical'      => 'Ecumenical Guest',
+              'Delegate'                      => 'Delegate',
+              'New Delegate'                  => 'New Delegate',
+              'Visitor'                       => 'Visitor',
+              'Resource Person'               => 'Resource Person',
+              '2012 Ordinand / Commissionand' => '2012 Ordinand / Commissionand',
+              'Ecumenical Guest'              => 'Ecumenical Guest',
             ),
           ),
           'delegate'                  => array(
@@ -67,7 +67,7 @@ add_action( 'scaleup_app_init', function () {
             'type'    => 'html',
             'content' => '<p class="alert alert-info">If you attended Annual Conference in 2011 or 2012 then your information should already be on file in our website Directory.</p>'
           ),
-          'person_id'                 => array(
+          'id'                        => array(
             'type'        => 'text',
             'label'       => 'Enter your "Last Name, First Name" to find your record',
             'placeholder' => 'Search by last name',
@@ -85,13 +85,13 @@ add_action( 'scaleup_app_init', function () {
             'label'    => 'Salutation',
             'type'     => 'select',
             'options'  => array(
-              ''       => '',
-              'ms.'    => 'Ms.',
-              'mr.'    => 'Mr.',
-              'mrs.'   => 'Mrs.',
-              'rev'    => 'Rev.',
-              'dr.'    => 'Dr.',
-              'rev-dr' => 'Rev. Dr.',
+              ''         => '',
+              'Ms.'      => 'Ms.',
+              'Mr.'      => 'Mr.',
+              'Mrs.'     => 'Mrs.',
+              'Rev.'     => 'Rev.',
+              'Dr.'      => 'Dr.',
+              'Rev. Dr.' => 'Rev. Dr.',
             ),
             'template' => 'select2',
           ),
@@ -193,10 +193,10 @@ add_action( 'scaleup_app_init', function () {
             'label'    => 'Ministry Status',
             'type'     => 'select',
             'options'  => array(
-              ''   => '',
-              'RT' => 'Retired',
-              'SP' => 'Special Ministry',
-              'RN' => 'Retained on the Roll',
+              ''                          => '',
+              'RT - Retired'              => 'RT - Retired',
+              'SP - Special Ministry'     => 'SP - Special Ministry',
+              'RN - Retained on the Roll' => 'Retained on the Roll',
             ),
             'template' => 'select2',
             'params'   => array(
@@ -207,27 +207,32 @@ add_action( 'scaleup_app_init', function () {
             'label'    => 'Designation',
             'type'     => 'select',
             'options'  => array(
-              ''       => '',
-              'OM'     => 'Ordained Minister',
-              'DM'     => 'Diaconal Minister',
-              'IM'     => 'Interim Minister',
-              'DLM'    => 'Designated Lay Minister',
-              'DLM-RT' => 'Designated Lay Minister (retired)',
-              'CDM'    => 'Congregationally Designated Ministry',
-              'US'     => 'United [Ordained] Supply',
-              'DS'     => 'Diaconal Supply',
-              'RS'     => 'Retired Supply',
-              'TM'     => 'Team Minister',
-              'CS'     => 'Candidate Supply',
-              'SS'     => 'Student Supply',
-              'IS'     => 'Intern Supply',
-              'OS'     => 'Ordained Supply (other denomination)',
+              ''                                           => '',
+              'OM - Ordained Minister'                     => 'OM - Ordained Minister',
+              'DM - Diaconal Minister'                     => 'DM - Diaconal Minister',
+              'IM - Interim Minister'                      => 'IM - Interim Minister',
+              'DLM - Designated Lay Minister'              => 'DLM - Designated Lay Minister',
+              'DLM-RT - Designated Lay Minister (retired)' => 'DLM-RT - Designated Lay Minister (retired)',
+              'CDM - Congregationally Designated Ministry' => 'CDM - Congregationally Designated Ministry',
+              'US - United [Ordained] Supply'              => 'US - United [Ordained] Supply',
+              'DS - Diaconal Supply'                       => 'DS - Diaconal Supply',
+              'RS - Retired Supply'                        => 'RS - Retired Supply',
+              'TM - Team Minister'                         => 'TM - Team Minister',
+              'CS - Candidate Supply'                      => 'CS - Candidate Supply',
+              'SS - Student Supply'                        => 'SS - Student Supply',
+              'IS - Intern Supply'                         => 'IS - Intern Supply',
+              'OS - Ordained Supply (other denomination)'  => 'OS - Ordained Supply (other denomination)',
             ),
             'template' => 'select2',
             'class'    => 'wide-field',
             'params'   => array(
               'placeholder' => 'Select your Designation',
             ),
+          ),
+          'gender'                    => array(
+            'label'   => 'Gender',
+            'type'    => 'radio',
+            'options' => array( 'Male' => 'Male', 'Female' => 'Female' ),
           ),
           'comments'                  => array(
             'label' => 'Other Comments?',
@@ -357,6 +362,9 @@ add_action( 'scaleup_app_init', function () {
           'type'     => 'taxonomy',
           'taxonomy' => 'conferences',
         ),
+        'sex'             => array(
+          'meta_key' => 'sex',
+        )
       ) );
 
       /**
@@ -427,25 +435,6 @@ add_action( 'scaleup_app_init', function () {
     }
 
     /**
-     * Return associative array of people.
-     * Key is person id and value is person's name.
-     *
-     * Callback function for people field
-     *
-     * @return array
-     */
-    function get_people_options() {
-
-      $people = array();
-
-      /**
-       * @todo: implement get_people_options callback function
-       */
-
-      return $people;
-    }
-
-    /**
      * Callback for GET request to registration view
      *
      * @param $args
@@ -478,7 +467,46 @@ add_action( 'scaleup_app_init', function () {
 
       /** @var $form ScaleUp_Form */
       $form = $this->get_feature( 'form', 'registration' );
-      $form->add_action( 'store', array( $item, 'create' ) );
+
+      /**
+       * Callback function that removes required from new person registration form fields
+       *
+       * @param $form ScaleUp_Form
+       * @param $args
+       */
+      $form->make_optional = function ( $form, $args ) {
+        $fields = array( 'first_name', 'last_name', 'street_address', 'city', 'province', 'postal_code', 'country' );
+        foreach ( $fields as $field_name ) {
+          /** @var $field ScaleUp_Form_Field */
+          $field = $form->get_feature( 'form_field', $field_name );
+          $field->remove_validation( 'required' );
+        }
+      };
+
+      if ( isset( $args[ 'id' ] ) && $args[ 'id' ] > 0 ) {
+        /**
+         * If a person was selected then make "new person" fields optional
+         */
+        $form->add_filter( 'process', array( $form, 'make_optional' ), 25 );
+      } else {
+        /**
+         * If a new person is being created then create a post title from Last name, First name
+         * To add the post title we hook a function into form "process" filter
+         */
+        $form->add_filter( 'process', function ( $args ) {
+          $args[ 'post_title' ] = "{$args[ 'last_name' ]}, {$args[ 'first_name' ]}";
+          return $args;
+        }, 35 );
+      }
+
+      /**
+       * Store item after form is validated
+       */
+      $form->add_action( 'store', array( $item, 'store' ) );
+
+      /**
+       * process the from from $args
+       */
       $form->process( $args );
       get_template_part( '/registration-app/register.php' );
 
@@ -511,7 +539,7 @@ add_action( 'scaleup_app_init', function () {
       }
 
       $p       = new stdClass();
-      $p->id   = -1;
+      $p->id   = 0;
       $p->text = 'Not In Directory';
 
       $results    = array();

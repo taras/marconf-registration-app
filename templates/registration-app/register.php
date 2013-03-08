@@ -48,7 +48,14 @@
 
   <script type="text/javascript">
     jQuery(document).ready(function ($) {
-      $( "#field_person_id" ).select2({
+      function populate_person() {
+        var person_id = $("#field_id").attr( 'value' );
+        $.ajax("people/"+person_id).done(function(data){
+          $("#personalInformation").remove();
+          $("#new-person").before( data );
+        });
+      }
+      $( "#field_id" ).select2({
         placeholder: 'Search by "Last Name, First Name"',
         minimumInputLength: 3,
         ajax: {
@@ -68,29 +75,29 @@
           }
         }
       });
-      // only hide new registration form if field_person_id is set to -1, meaning that record is not in directory
-      if ( ( -1 != $("#field_person_id").attr( 'value' ) ) || ( "" == $("#field_person_id").attr( 'value' ) )  ) {
+      // only hide new registration form if field_id is set to -1, meaning that record is not in directory
+      if ( ( 0 == $("#field_id").attr( 'value' ) ) ) {
         $( "#new-person, #field_submit").hide();
+      } else {
+        populate_person();
+        $( "#new-person").hide();
+        $('#field_submit').show();
       }
       $("#not-in-directory").click(function(e){
         $("#new-person").show();
-        $("#field_person_id").select2( "data", {id: -1, text: "" } );
+        $("#field_id").select2( "data", {id: 0, text: "" } );
         $("#personalInformation").remove();
         $('#field_submit').show();
         e.preventDefault();
       });
-      $("#field_person_id").change( function(){
+      $("#field_id").change( function(){
         if ( 0 == $(this).attr( 'value' ) ) {
-          $("#field_person_id").select2( "data", { id: -1, text: "" } );
+          $("#field_id").select2( "data", { id: 0, text: "" } );
           $("#new-person").show();
           $('#field_submit').show();
         } else {
           $("#new-person").hide();
-          var person_id = $(this).attr( 'value' );
-          $.ajax("people/"+person_id).done(function(data){
-            $("#personalInformation").remove();
-            $("#new-person").before( data );
-          });
+          populate_person();
           $('#field_submit').show();
         }
       })
