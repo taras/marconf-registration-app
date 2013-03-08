@@ -76,8 +76,10 @@
         }
       });
       // only hide new registration form if field_id is set to -1, meaning that record is not in directory
-      if ( ( 0 == $("#field_id").attr( 'value' ) ) ) {
+      if ( '' == $("#field_id").attr( 'value' ) ) {
         $( "#new-person, #field_submit").hide();
+      } else if ( -1 == $("#field_id").attr( 'value' ) ) {
+
       } else {
         populate_person();
         $( "#new-person").hide();
@@ -85,14 +87,14 @@
       }
       $("#not-in-directory").click(function(e){
         $("#new-person").show();
-        $("#field_id").select2( "data", {id: 0, text: "" } );
+        $("#field_id").select2( "data", {id: -1, text: "" } );
         $("#personalInformation").remove();
         $('#field_submit').show();
         e.preventDefault();
       });
       $("#field_id").change( function(){
-        if ( 0 == $(this).attr( 'value' ) ) {
-          $("#field_id").select2( "data", { id: 0, text: "" } );
+        if ( -1 == $(this).attr( 'value' ) ) {
+          $("#field_id").select2( "data", { id: -1, text: "" } );
           $("#new-person").show();
           $('#field_submit').show();
         } else {

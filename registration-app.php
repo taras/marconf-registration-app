@@ -465,7 +465,7 @@ add_action( 'scaleup_app_init', function () {
 
       if ( isset( $args[ 'id' ] ) && $args[ 'id' ] > 0 ) {
         /**
-         * If a person was selected then make "new person" fields optional
+         * If a person was selected then make "new person" fields optional and remove values from args
          */
         $form->add_filter( 'process', array( $form, 'make_optional' ), 25 );
         $form->add_filter( 'process', function ( $args ) {
@@ -484,7 +484,7 @@ add_action( 'scaleup_app_init', function () {
          */
         $form->add_filter( 'process', function ( $args ) {
           $args[ 'post_title' ] = "{$args[ 'last_name' ]}, {$args[ 'first_name' ]}";
-
+          unset( $args[ 'id' ] );
           return $args;
         }, 35 );
       }
