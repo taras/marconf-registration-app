@@ -72,7 +72,6 @@ add_action( 'scaleup_app_init', function () {
             'label'       => 'Enter your "Last Name, First Name" to find your record',
             'placeholder' => 'Search by last name',
             'options'     => array( '' => '' ),
-            'validation'  => array( array( $this, 'is_person' ) ),
             'class'       => 'wide-field',
             'before'      => '<p class="small">or choose "Not in directory" if you are not in the directory or your record cannot be found.</p>',
             'after'       => '<button id="not-in-directory" class="btn btn-small btn-info">Not In Directory</button>',
@@ -350,10 +349,6 @@ add_action( 'scaleup_app_init', function () {
         'existingvalues'  => array(
           'meta_key' => '_existingvalues',
         ),
-        'directory'       => array(
-          'type'     => 'taxonomy',
-          'taxonomy' => 'directory',
-        ),
         'delegate'        => array(
           'type'     => 'taxonomy',
           'taxonomy' => 'directory',
@@ -362,8 +357,8 @@ add_action( 'scaleup_app_init', function () {
           'type'     => 'taxonomy',
           'taxonomy' => 'conferences',
         ),
-        'sex'             => array(
-          'meta_key' => 'sex',
+        'gender'          => array(
+          'meta_key' => 'gender',
         )
       ) );
 
@@ -418,23 +413,6 @@ add_action( 'scaleup_app_init', function () {
     }
 
     /**
-     * Check provided value is an actual person.
-     *
-     * Callback for person field validation.
-     *
-     * @param $field ScaleUp_Form_Field
-     * @return bool
-     */
-    function is_person( $field ) {
-
-      /**
-       * @todo: implement is_person validation filter callback
-       */
-
-      return $field;
-    }
-
-    /**
      * Callback for GET request to registration view
      *
      * @param $args
@@ -481,6 +459,8 @@ add_action( 'scaleup_app_init', function () {
           $field = $form->get_feature( 'form_field', $field_name );
           $field->remove_validation( 'required' );
         }
+
+        return $args;
       };
 
       if ( isset( $args[ 'id' ] ) && $args[ 'id' ] > 0 ) {
@@ -488,6 +468,15 @@ add_action( 'scaleup_app_init', function () {
          * If a person was selected then make "new person" fields optional
          */
         $form->add_filter( 'process', array( $form, 'make_optional' ), 25 );
+        $form->add_filter( 'process', function ( $args ) {
+          $fields = array( 'salutation', 'first_name', 'last_name', 'street_address', 'address_line2', 'city', 'province',
+            'postal_code', 'country', 'charge', 'email', 'second_email', 'photo', 'work_phone', 'home_phone', 'mobile_phone',
+            'fax', 'ministry_status', 'designation', 'gender', 'comments', );
+          foreach ( $fields as $field ) {
+            unset( $args[ $field ] );
+          }
+          return $args;
+        }, 35 );
       } else {
         /**
          * If a new person is being created then create a post title from Last name, First name
@@ -495,6 +484,7 @@ add_action( 'scaleup_app_init', function () {
          */
         $form->add_filter( 'process', function ( $args ) {
           $args[ 'post_title' ] = "{$args[ 'last_name' ]}, {$args[ 'first_name' ]}";
+
           return $args;
         }, 35 );
       }
