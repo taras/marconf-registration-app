@@ -25,10 +25,18 @@ add_action( 'scaleup_app_init', function () {
         'notify'      => array(
           array(
             'method'  => 'email',
-            'to'      => array( $this, '_get_email' ),
+            'to'      => '{email}',
+            'from'    => "tarasm@gmail.com",
             'subject' => 'You are registered to the 2013 Annual Meeting',
             'message' => 'We look forward to seeing you.',
           ),
+          array(
+            'method'  => 'email',
+            'from'    => '{first_name} {last_name} <{email}>',
+            'to'      => '{email}',
+            'subject' => 'New registration: {first_name} {last_name}',
+            'message' => array( $this, 'compose_admin_message' ),
+          )
         ),
         'store'       => array(
           'schemas' => array( 'person' )
@@ -67,7 +75,7 @@ add_action( 'scaleup_app_init', function () {
             'type'    => 'html',
             'content' => '<p class="alert alert-info">If you attended Annual Conference in 2011 or 2012 then your information should already be on file in our website Directory.</p>'
           ),
-          'id'                        => array(
+          'ID'                        => array(
             'type'        => 'text',
             'label'       => 'Enter your "Last Name, First Name" to find your record',
             'placeholder' => 'Search by last name',
@@ -163,7 +171,7 @@ add_action( 'scaleup_app_init', function () {
             'validation' => array( 'email' ),
             'class'      => 'input-large',
           ),
-          'photo'                     => array(
+          'post_thumbnail'            => array(
             'label' => 'Photo for directory',
             'type'  => 'file',
             'class' => 'input-large',
@@ -244,7 +252,7 @@ add_action( 'scaleup_app_init', function () {
           ),
           'conferences'               => array(
             'type'   => 'hidden',
-            'value'  => 'name=2013',
+            'value'  => 'by=name&value=2013',
             'format' => 'args_string',
           ),
           'submit'                    => array(
@@ -375,7 +383,7 @@ add_action( 'scaleup_app_init', function () {
        */
       $this->register( 'view', array(
         'name' => 'people',
-        'url'  => '/people/{id}'
+        'url'  => '/people/{ID}'
       ) );
 
     }
@@ -445,12 +453,12 @@ add_action( 'scaleup_app_init', function () {
 
       /** @var $form ScaleUp_Form */
       $form = $this->get_feature( 'form', 'registration' );
-
       /**
-       * Callback function that removes required from new person registration form fields
+       * Make form new registrant form fields optional by removing reqiured validation
        *
-       * @param $form ScaleUp_Form
-       * @param $args
+       * @param ScaleUp_Form $form
+       * @param array $args
+       * @return mixed
        */
       $form->make_optional = function ( $form, $args ) {
         $fields = array( 'first_name', 'last_name', 'street_address', 'city', 'province', 'postal_code', 'country' );
@@ -463,11 +471,19 @@ add_action( 'scaleup_app_init', function () {
         return $args;
       };
 
-      if ( isset( $args[ 'id' ] ) && $args[ 'id' ] > 0 ) {
+      if ( isset( $args[ 'ID' ] ) && '' == $args[ 'ID' ] ) {
+        $form->register( 'alert',
+          array(
+            'type'  => 'warning',
+            'msg'   => 'We were not able to locate your record. If you attended 2012 Meeting enter your name, otherwise press Not in Directory button.'
+          ));
+      }
+
+      if ( isset( $args[ 'ID' ] ) && $args[ 'ID' ] > 0 ) {
         /**
          * If a person was selected then make "new person" fields optional and remove values from args
          */
-        $form->add_filter( 'process', array( $form, 'make_optional' ), 25 );
+        $form->add_filter( 'process', array( $form, 'make_optional' ), 35 );
         $form->add_filter( 'process', function ( $args ) {
           $fields = array( 'salutation', 'first_name', 'last_name', 'street_address', 'address_line2', 'city', 'province',
             'postal_code', 'country', 'charge', 'email', 'second_email', 'photo', 'work_phone', 'home_phone', 'mobile_phone',
@@ -476,7 +492,7 @@ add_action( 'scaleup_app_init', function () {
             unset( $args[ $field ] );
           }
           return $args;
-        }, 35 );
+        }, 45 );
       } else {
         /**
          * If a new person is being created then create a post title from Last name, First name
@@ -484,15 +500,15 @@ add_action( 'scaleup_app_init', function () {
          */
         $form->add_filter( 'process', function ( $args ) {
           $args[ 'post_title' ] = "{$args[ 'last_name' ]}, {$args[ 'first_name' ]}";
-          unset( $args[ 'id' ] );
+          unset( $args[ 'ID' ] );
           return $args;
-        }, 35 );
+        }, 45 );
       }
 
       /**
        * Store item after form is validated
        */
-      $form->add_action( 'store', array( $item, 'store' ) );
+      $form->add_filter( 'store', array( $item, 'store' ) );
 
       /**
        * process the from from $args
@@ -561,9 +577,9 @@ add_action( 'scaleup_app_init', function () {
      */
     function get_people( $args ) {
 
-      if ( isset( $args[ 'id' ] ) && 0 < $args[ 'id' ] ) {
+      if ( isset( $args[ 'ID' ] ) && 0 < $args[ 'ID' ] ) {
         global $post;
-        $post = get_post( $args[ 'id' ] );
+        $post = get_post( $args[ 'ID' ] );
         setup_postdata( $post );
         get_template_part( '/registration-app/person.php' );
       }
@@ -572,16 +588,14 @@ add_action( 'scaleup_app_init', function () {
     }
 
     /**
-     * Return email of the registrant
+     * Return message to be sent via email to the admin
      *
-     * @param $form ScaleUp_Form
+     * @param array $args
      * @return string
      */
-    function _get_email( $form ) {
-      $form  = $this->get_feature( 'form', 'registration' );
-      $field = $form->get_feature( 'form_field', 'email' );
-
-      return $field->get( 'value' );
+    function compose_admin_message( $args ) {
+      $args = apply_filters( 'scaleup_flatten_args', $args );
+      return implode( "\n", $args );
     }
 
   }
